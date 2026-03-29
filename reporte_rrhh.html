@@ -7,180 +7,104 @@
         body { font-family: Arial, sans-serif; margin: 20px; }
         h1 { color: #333; }
         table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
-        th { background-color: #4CAF50; color: white; }
-        tr:nth-child(even) { background-color: #f2f2f2; }
-        tr:hover { background-color: #ddd; }
-        .estado-activo { color: green; font-weight: bold; }
-        .estado-inactivo { color: red; font-weight: bold; }
+        th, td { border: 1px solid #333; padding: 12px; text-align: left; }
+        th { background-color: #2196F3; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        tr:hover { background-color: #e3f2fd; }
+        .estado { padding: 5px 10px; border-radius: 4px; text-align: center; font-weight: bold; }
+        .badge { display: inline-block; padding: 5px 12px; border-radius: 12px; font-weight: bold; }
     </style>
 </head>
 <body>
     <h1>Reporte de Recursos Humanos</h1>
     <h2>Business Corporation - Lista de Trabajadores</h2>
-    <p>Total de empleados: 26</p>
+    <p>Total de empleados: 10</p>
     <table>
         <tr>
             <th>Nombre Completo</th>
-            <th>Resumen del Puesto</th>
+            <th>Puesto</th>
             <th>Jefe Inmediato</th>
             <th>Estado</th>
         </tr>
         <tr>
             <td>Roberto Carlos</td>
-            <td>Puesto: Gerente General</td>
+            <td><strong>GER</strong></td>
             <td>Sin jefe (Alta Dirección)</td>
-            <td>Activo</td>
+            <td style='background-color: #4CAF50; color: white; text-align: center;'>
+                <span class='badge'>Activo</span>
+            </td>
         </tr>
         <tr>
             <td>Lucía Méndez</td>
-            <td>Puesto: Jefe de Marketing</td>
+            <td><strong>JEF MK</strong></td>
             <td>Roberto Carlos</td>
-            <td>Activo</td>
+            <td style='background-color: #4CAF50; color: white; text-align: center;'>
+                <span class='badge'>Activo</span>
+            </td>
         </tr>
         <tr>
             <td>Alan Turing</td>
-            <td>Puesto: Jefe de Sistemas</td>
+            <td><strong>JEF SIS</strong></td>
             <td>Roberto Carlos</td>
-            <td>Activo</td>
-        </tr>
-        <tr>
-            <td>Henry Ford</td>
-            <td>Puesto: Jefe de Producción</td>
-            <td>Roberto Carlos</td>
-            <td>Activo</td>
-        </tr>
-        <tr>
-            <td>Jeff Bezos</td>
-            <td>Puesto: Jefe de Logística</td>
-            <td>Roberto Carlos</td>
-            <td>Término de contrato</td>
-        </tr>
-        <tr>
-            <td>Warren Buffett</td>
-            <td>Puesto: Jefe de Finanzas</td>
-            <td>Roberto Carlos</td>
-            <td>Renuncia</td>
+            <td style='background-color: #4CAF50; color: white; text-align: center;'>
+                <span class='badge'>Activo</span>
+            </td>
         </tr>
         <tr>
             <td>Juan Pérez</td>
-            <td>Puesto: Asistente de Marketing</td>
+            <td><strong>AST MK</strong></td>
             <td>Lucía Méndez</td>
-            <td>Activo</td>
-        </tr>
-        <tr>
-            <td>Ada Lovelace</td>
-            <td>Puesto: Asistente de Sistemas</td>
-            <td>Alan Turing</td>
-            <td>Activo</td>
+            <td style='background-color: #4CAF50; color: white; text-align: center;'>
+                <span class='badge'>Activo</span>
+            </td>
         </tr>
         <tr>
             <td>Carlos Slim</td>
-            <td>Puesto: Asistente de Producción</td>
-            <td>Henry Ford</td>
-            <td>Despido</td>
+            <td><strong>AST SIS</strong></td>
+            <td>Alan Turing</td>
+            <td style='background-color: #333333; color: white; text-align: center;'>
+                <span class='badge'>Despido</span>
+            </td>
         </tr>
         <tr>
             <td>Marie Curie</td>
-            <td>Puesto: Asistente de Logística</td>
-            <td>Jeff Bezos</td>
-            <td>Activo</td>
-        </tr>
-        <tr>
-            <td>Nikola Tesla</td>
-            <td>Puesto: Asistente de Finanzas</td>
-            <td>Warren Buffett</td>
-            <td>Activo</td>
-        </tr>
-        <tr>
-            <td>Elon Musk</td>
-            <td>Puesto: Técnico de Marketing | Experiencia: 5 años</td>
+            <td><strong>AST LOG</strong></td>
             <td>Lucía Méndez</td>
-            <td>Activo</td>
-        </tr>
-        <tr>
-            <td>Grace Hopper</td>
-            <td>Puesto: Técnico de Marketing | Experiencia: 9 años</td>
-            <td>Lucía Méndez</td>
-            <td>Activo</td>
-        </tr>
-        <tr>
-            <td>Margaret Hamilton</td>
-            <td>Puesto: Técnico de Marketing | Experiencia: 11 años</td>
-            <td>Lucía Méndez</td>
-            <td>Activo</td>
+            <td style='background-color: #FF9800; color: white; text-align: center;'>
+                <span class='badge'>Renuncia</span>
+            </td>
         </tr>
         <tr>
             <td>Linus Torvalds</td>
-            <td>Puesto: Técnico de Sistemas | Experiencia: 10 años</td>
+            <td><strong>TEC SIS</strong></td>
             <td>Alan Turing</td>
-            <td>Activo</td>
-        </tr>
-        <tr>
-            <td>Steve Wozniak</td>
-            <td>Puesto: Técnico de Sistemas | Experiencia: 15 años</td>
-            <td>Alan Turing</td>
-            <td>Activo</td>
-        </tr>
-        <tr>
-            <td>Bill Gates</td>
-            <td>Puesto: Técnico de Sistemas | Experiencia: 8 años</td>
-            <td>Alan Turing</td>
-            <td>Término de contrato</td>
+            <td style='background-color: #4CAF50; color: white; text-align: center;'>
+                <span class='badge'>Activo</span>
+            </td>
         </tr>
         <tr>
             <td>Tim Berners-Lee</td>
-            <td>Puesto: Técnico de Producción | Experiencia: 12 años</td>
-            <td>Henry Ford</td>
-            <td>Activo</td>
+            <td><strong>TEC MK</strong></td>
+            <td>Lucía Méndez</td>
+            <td style='background-color: #4CAF50; color: white; text-align: center;'>
+                <span class='badge'>Activo</span>
+            </td>
         </tr>
         <tr>
-            <td>Vint Cerf</td>
-            <td>Puesto: Técnico de Producción | Experiencia: 7 años</td>
-            <td>Henry Ford</td>
-            <td>Activo</td>
-        </tr>
-        <tr>
-            <td>Ken Thompson</td>
-            <td>Puesto: Técnico de Producción | Experiencia: 14 años</td>
-            <td>Henry Ford</td>
-            <td>Activo</td>
-        </tr>
-        <tr>
-            <td>Alan Kay</td>
-            <td>Puesto: Técnico de Logística | Experiencia: 6 años</td>
-            <td>Jeff Bezos</td>
-            <td>Activo</td>
-        </tr>
-        <tr>
-            <td>Dennis Ritchie</td>
-            <td>Puesto: Técnico de Logística | Experiencia: 9 años</td>
-            <td>Jeff Bezos</td>
-            <td>Activo</td>
-        </tr>
-        <tr>
-            <td>Bjarne Stroustrup</td>
-            <td>Puesto: Técnico de Logística | Experiencia: 4 años</td>
-            <td>Jeff Bezos</td>
-            <td>Renuncia</td>
+            <td>Elon Musk</td>
+            <td><strong>TEC LOG</strong></td>
+            <td>Lucía Méndez</td>
+            <td style='background-color: #f44336; color: white; text-align: center;'>
+                <span class='badge'>Término de contrato</span>
+            </td>
         </tr>
         <tr>
             <td>Larry Page</td>
-            <td>Puesto: Técnico de Finanzas | Experiencia: 8 años</td>
-            <td>Warren Buffett</td>
-            <td>Activo</td>
-        </tr>
-        <tr>
-            <td>Sergey Brin</td>
-            <td>Puesto: Técnico de Finanzas | Experiencia: 6 años</td>
-            <td>Warren Buffett</td>
-            <td>Activo</td>
-        </tr>
-        <tr>
-            <td>Larry Ellison</td>
-            <td>Puesto: Técnico de Finanzas | Experiencia: 10 años</td>
-            <td>Warren Buffett</td>
-            <td>Activo</td>
+            <td><strong>TEC FIN</strong></td>
+            <td>Roberto Carlos</td>
+            <td style='background-color: #4CAF50; color: white; text-align: center;'>
+                <span class='badge'>Activo</span>
+            </td>
         </tr>
     </table>
 </body>

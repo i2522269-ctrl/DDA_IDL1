@@ -2,16 +2,16 @@
 # APP STREAMLIT - SISTEMA RRHH BUSINESS CORPORATION
 # ================================================================
 #
-# PROPÓSITO: Interfaz web interactiva para el sistema de RRHH
-#
 # FUNCIONALIDADES:
-#   - Ver lista de empleados en una tabla
-#   - Crear nuevos empleados (con persistencia en JSON)
-#   - Generar reporte HTML
-#   - Estadísticas de la empresa
+#   - Ver lista de empleados en tabla
+#   - Registrar nuevos empleados (con puestos predefinidos)
+#   - Generar reporte HTML con colores por estado
 #
-# PARA EJECUTAR:
-#   streamlit run app.py
+# COLORES POR ESTADO:
+#   🟢 Activo        → Verde (#4CAF50)
+#   🔴 Término contrato → Rojo (#f44336)
+#   ⚫ Despido       → Negro (#333333)
+#   🟠 Renuncia      → Naranja (#FF9800)
 #
 # ================================================================
 
@@ -23,17 +23,17 @@ import streamlit as st
 import pandas as pd
 
 from models.trabajador import Trabajador
-from models.tecnico import Tecnico
-from services.reporte_service import generar_reporte_html
+from services.reporte_service import generar_reporte_html, get_colores_estado
 from services.empleado_service import (
     crear_empleado,
     cargar_empleados,
-    guardar_empleados
+    guardar_empleados,
+    PUESTOS_DISPONIBLES
 )
 
 
 # ================================================================
-# CONFIGURACIÓN DE LA PÁGINA
+# CONFIGURACIÓN
 # ================================================================
 st.set_page_config(
     page_title="Sistema RRHH",
@@ -43,11 +43,8 @@ st.set_page_config(
 
 
 # ================================================================
-# INICIALIZACIÓN DEL ESTADO DE SESIÓN
+# ESTADO DE SESIÓN
 # ================================================================
-# session_state mantiene los datos mientras la app está abierta
-# Si es la primera vez, carga los empleados desde JSON
-
 if "empleados" not in st.session_state:
     st.session_state.empleados = cargar_empleados()
 
@@ -56,35 +53,31 @@ if "empleados" not in st.session_state:
 # FUNCIONES DE APOYO
 # ================================================================
 
-def convertir_a_dataframe(lista_empleados):
-    """
-    Convierte la lista de empleados a un DataFrame de Pandas.
-    """
+def convertir_a_dataframe(lista):
+    """Convierte la lista a DataFrame con colores."""
     datos = []
-    for emp in lista_empleados:
+    for emp in lista:
+        estado_codigo = emp.get_estado_codigo()
+        color_fondo, _ = get_colores_estado(estado_codigo)
+        
         datos.append({
             "Nombre": emp.get_nombre(),
             "Puesto": emp.get_puesto(),
-            "Resumen": emp.get_resumen(),
             "Jefe Inmediato": emp.get_jefe_inmediato(),
-            "Estado": emp.get_estado()
+            "Estado": emp.get_estado(),
+            "_color": color_fondo
         })
     return pd.DataFrame(datos)
 
 
-def recargar_y_guardar():
-    """
-    Recarga la lista de empleados y guarda en JSON.
-    Se llama después de crear/eliminar un empleado.
-    """
-    # Guardar en JSON
+def recargar_datos():
+    """Recarga los datos desde JSON."""
     guardar_empleados(st.session_state.empleados)
-    # Recargar desde JSON para asegurar consistencia
     st.session_state.empleados = cargar_empleados()
 
 
 # ================================================================
-# ENCABEZADO PRINCIPAL
+# ENCABEZADO
 # ================================================================
 st.title("🏢 Sistema de Recursos Humanos")
 st.markdown("**Business Corporation**")
@@ -92,152 +85,109 @@ st.markdown("---")
 
 
 # ================================================================
-# PESTAÑAS DE NAVEGACIÓN
+# PESTAÑAS
 # ================================================================
 tab1, tab2, tab3 = st.tabs([
     "📊 Dashboard",
-    "🆕 Registrar Empleado",
-    "📄 Reporte HTML"
+    "🆕 Registrar",
+    "📄 Reporte"
 ])
 
 
 # ================================================================
-# TAB 1: DASHBOARD (Estadísticas y Lista)
+# TAB 1: DASHBOARD
 # ================================================================
 with tab1:
-    st.subheader("📊 Estadísticas de la Empresa")
+    st.subheader("📊 Estadísticas")
     
-    # Métricas principales
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        st.metric("Total Empleados", len(st.session_state.empleados))
+        st.metric("Total", len(st.session_state.empleados))
     
     with col2:
-        activos = sum(1 for e in st.session_state.empleados if e.get_estado() == "Activo")
-        st.metric("Activos", activos)
+        activos = sum(1 for e in st.session_state.empleados if e.get_estado_codigo() == "A")
+        st.metric("🟢 Activos", activos)
     
     with col3:
-        tecnicos = sum(1 for e in st.session_state.empleados if isinstance(e, Tecnico))
-        st.metric("Personal Técnico", tecnicos)
+        tc = sum(1 for e in st.session_state.empleados if e.get_estado_codigo() == "TC")
+        st.metric("🔴 TC", tc)
     
     with col4:
-        inactivos = len(st.session_state.empleados) - activos
-        st.metric("Inactivos", inactivos)
+        otros = sum(1 for e in st.session_state.empleados if e.get_estado_codigo() in ["D", "R"])
+        st.metric("⚫ D + 🟠 R", otros)
     
     st.markdown("---")
     
-    # Tabla de empleados
+    # Tabla con colores
     st.subheader("👥 Lista de Empleados")
+    
     df = convertir_a_dataframe(st.session_state.empleados)
+    
+    # Mostrar tabla con estilo
     st.dataframe(
-        df,
+        df[["Nombre", "Puesto", "Jefe Inmediato", "Estado"]],
         use_container_width=True,
         hide_index=True
     )
 
 
 # ================================================================
-# TAB 2: REGISTRAR NUEVO EMPLEADO
+# TAB 2: REGISTRAR EMPLEADO
 # ================================================================
 with tab2:
     st.subheader("🆕 Registrar Nuevo Empleado")
     
     with st.form("form_empleado", clear_on_submit=True):
-        # ───────────────────────────────────────────────────────
-        # TIPO DE EMPLEADO
-        # ───────────────────────────────────────────────────────
         col1, col2 = st.columns(2)
         
         with col1:
-            tipo = st.radio(
-                "Tipo de empleado:",
-                options=["Trabajador", "Tecnico"],
-                horizontal=True,
-                help="Trabajador: Asistente o similar. Técnico: Con años de experiencia."
+            # Selector de puesto (dropdown)
+            puesto_opciones = list(PUESTOS_DISPONIBLES.keys())
+            puesto = st.selectbox(
+                "Puesto *",
+                options=puesto_opciones,
+                format_func=lambda x: f"{x} - {PUESTOS_DISPONIBLES[x]}"
             )
         
-        # ───────────────────────────────────────────────────────
-        # DATOS BÁSICOS
-        # ───────────────────────────────────────────────────────
         with col2:
+            # Selector de estado con colores
             estado = st.selectbox(
-                "Estado laboral:",
+                "Estado *",
                 options=["A", "TC", "D", "R"],
                 format_func=lambda x: {
-                    "A": "Activo",
-                    "TC": "Término de contrato",
-                    "D": "Despido",
-                    "R": "Renuncia"
-                }[x],
-                help="A=Activo, TC=Contrato terminado, D=Despedido, R=Renunció"
+                    "A": "🟢 Activo",
+                    "TC": "🔴 Término de contrato",
+                    "D": "⚫ Despido",
+                    "R": "🟠 Renuncia"
+                }[x]
             )
         
-        # ───────────────────────────────────────────────────────
-        # CAMPOS DEL FORMULARIO
-        # ───────────────────────────────────────────────────────
-        nombre = st.text_input(
-            "Nombre completo *",
-            placeholder="Ej: Juan Pérez"
-        )
-        
-        puesto = st.text_input(
-            "Puesto *",
-            placeholder="Ej: Asistente de Marketing"
-        )
+        nombre = st.text_input("Nombre completo *", placeholder="Ej: Juan Pérez")
         
         # Selector de jefe
         opciones_jefe = ["Sin jefe (Gerente)"] + [e.get_nombre() for e in st.session_state.empleados]
-        jefe_seleccionado = st.selectbox(
-            "Jefe inmediato:",
-            options=opciones_jefe,
-            help="Selecciona el jefe directo del nuevo empleado"
-        )
+        jefe_seleccionado = st.selectbox("Jefe inmediato", opciones_jefe)
         
-        # Años de experiencia (solo para Técnicos)
-        anios_experiencia = None
-        if tipo == "Tecnico":
-            anios_experiencia = st.number_input(
-                "Años de experiencia *",
-                min_value=0,
-                max_value=50,
-                value=0,
-                step=1,
-                help="Cantidad de años de experiencia como técnico"
-            )
-        
-        # ───────────────────────────────────────────────────────
-        # BOTÓN DE ENVÍO
-        # ───────────────────────────────────────────────────────
         st.markdown("---")
+        
         submitted = st.form_submit_button(
-            "➕ Registrar Empleado",
+            "➕ Registrar",
             type="primary",
             use_container_width=True
         )
         
-        # ───────────────────────────────────────────────────────
-        # PROCESAR EL FORMULARIO
-        # ───────────────────────────────────────────────────────
         if submitted:
-            # Validaciones
             errores = []
             
             if not nombre.strip():
                 errores.append("El nombre es obligatorio")
             
-            if not puesto.strip():
-                errores.append("El puesto es obligatorio")
-            
-            if tipo == "Tecnico" and (anios_experiencia is None or anios_experiencia < 0):
-                errores.append("Los años de experiencia son obligatorios para técnicos")
-            
-            # Mostrar errores o procesar
             if errores:
                 for error in errores:
                     st.error(f"❌ {error}")
             else:
-                # Buscar el objeto del jefe
+                # Buscar jefe
                 jefe_obj = None
                 if jefe_seleccionado != "Sin jefe (Gerente)":
                     for emp in st.session_state.empleados:
@@ -246,44 +196,26 @@ with tab2:
                             break
                 
                 try:
-                    # Crear el empleado
-                    nuevo_empleado = crear_empleado(
+                    nuevo = crear_empleado(
                         nombre=nombre,
                         puesto=puesto,
                         estado=estado,
-                        tipo=tipo,
-                        jefe=jefe_obj,
-                        anios_experiencia=anios_experiencia
+                        jefe=jefe_obj
                     )
                     
-                    # Agregar al array
-                    st.session_state.empleados.append(nuevo_empleado)
-                    
-                    # Guardar en JSON (persistencia)
+                    st.session_state.empleados.append(nuevo)
                     guardar_empleados(st.session_state.empleados)
                     
-                    st.success(f"✅ ¡Empleado '{nombre}' registrado exitosamente!")
+                    st.success(f"✅ ¡{nombre} registrado!")
                     st.balloons()
                     
                 except ValueError as e:
-                    st.error(f"❌ Error: {e}")
+                    st.error(f"❌ {e}")
     
-    # ───────────────────────────────────────────────────────
-    # INFORMACIÓN ADICIONAL
-    # ───────────────────────────────────────────────────────
-    with st.expander("ℹ️ Información sobre los campos"):
-        st.markdown("""
-        **Campos obligatorios (*):**
-        - **Nombre completo**: Nombre del nuevo empleado
-        - **Puesto**: Cargo que tendrá en la empresa
-        - **Años de experiencia**: Solo para técnicos (obligatorio)
-        
-        **Estados laborales:**
-        - **A (Activo)**: Trabajando actualmente
-        - **TC (Término de contrato)**: Contrato finalizado
-        - **D (Despido)**: Despedido por la empresa
-        - **R (Renuncia)**: Renunció voluntariamente
-        """)
+    # Info de puestos
+    with st.expander("ℹ️ Lista de puestos"):
+        for codigo, nombre_completo in PUESTOS_DISPONIBLES.items():
+            st.write(f"**{codigo}** → {nombre_completo}")
 
 
 # ================================================================
@@ -292,44 +224,32 @@ with tab2:
 with tab3:
     st.subheader("📄 Generar Reporte HTML")
     
-    col1, col2 = st.columns([2, 1])
-    
-    with col1:
-        st.info("""
-        **¿Qué hace este reporte?**
-        
-        Genera un archivo HTML con una tabla que muestra todos los empleados
-        registrados en el sistema, incluyendo:
-        
-        - Nombre completo
-        - Resumen del puesto (años de experiencia para técnicos)
-        - Jefe inmediato
-        - Estado laboral
-        """)
-    
-    with col2:
-        st.metric("Empleados en el sistema", len(st.session_state.empleados))
+    # Leyenda de colores
+    st.markdown("""
+    **Leyenda de colores por estado:**
+    - 🟢 **Activo** → Verde
+    - 🔴 **Término de contrato** → Rojo
+    - ⚫ **Despido** → Negro
+    - 🟠 **Renuncia** → Naranja
+    """)
     
     st.markdown("---")
     
-    # Botón para generar
-    if st.button("🔵 Generar Reporte HTML", type="primary", use_container_width=True):
-        with st.spinner("Generando reporte..."):
-            # Generar el HTML
+    if st.button("🔵 Generar Reporte", type="primary", use_container_width=True):
+        with st.spinner("Generando..."):
             archivo = generar_reporte_html(st.session_state.empleados)
         
-        st.success(f"✅ ¡Reporte generado exitosamente!")
-        st.markdown(f"**📁 Archivo:** `{archivo}`")
-        st.markdown("**💡 Abre el archivo en tu navegador para ver la tabla HTML.**")
+        st.success(f"✅ Reporte generado: `{archivo}`")
+        st.info("💡 Abre el archivo en tu navegador")
         
-        # Mostrar preview
-        with st.expander("👁️ Previsualizar contenido del reporte"):
+        # Preview
+        with st.expander("👁️ Previsualizar"):
             df_preview = convertir_a_dataframe(st.session_state.empleados)
-            st.dataframe(df_preview, hide_index=True)
+            st.dataframe(df_preview[["Nombre", "Puesto", "Jefe Inmediato", "Estado"]], hide_index=True)
 
 
 # ================================================================
 # FOOTER
 # ================================================================
 st.markdown("---")
-st.caption("Sistema RRHH - Business Corporation | Desarrollado con Python + Streamlit")
+st.caption("Sistema RRHH - Business Corporation | Python + Streamlit")

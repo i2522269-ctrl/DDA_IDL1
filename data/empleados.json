@@ -1,210 +1,72 @@
 [
   {
-    "tipo": "Trabajador",
     "nombre": "Roberto Carlos",
-    "puesto": "Gerente General",
+    "puesto": "GER",
+    "puesto_completo": "Gerente General",
     "estado": "A",
-    "jefe_inmediato": null,
-    "anios_experiencia": null
+    "jefe_inmediato": null
   },
   {
-    "tipo": "Trabajador",
     "nombre": "Lucía Méndez",
-    "puesto": "Jefe de Marketing",
+    "puesto": "JEF MK",
+    "puesto_completo": "Jefe de Marketing",
     "estado": "A",
-    "jefe_inmediato": "Roberto Carlos",
-    "anios_experiencia": null
+    "jefe_inmediato": "Roberto Carlos"
   },
   {
-    "tipo": "Trabajador",
     "nombre": "Alan Turing",
-    "puesto": "Jefe de Sistemas",
+    "puesto": "JEF SIS",
+    "puesto_completo": "Jefe de Sistemas",
     "estado": "A",
-    "jefe_inmediato": "Roberto Carlos",
-    "anios_experiencia": null
+    "jefe_inmediato": "Roberto Carlos"
   },
   {
-    "tipo": "Trabajador",
-    "nombre": "Henry Ford",
-    "puesto": "Jefe de Producción",
-    "estado": "A",
-    "jefe_inmediato": "Roberto Carlos",
-    "anios_experiencia": null
-  },
-  {
-    "tipo": "Trabajador",
-    "nombre": "Jeff Bezos",
-    "puesto": "Jefe de Logística",
-    "estado": "TC",
-    "jefe_inmediato": "Roberto Carlos",
-    "anios_experiencia": null
-  },
-  {
-    "tipo": "Trabajador",
-    "nombre": "Warren Buffett",
-    "puesto": "Jefe de Finanzas",
-    "estado": "R",
-    "jefe_inmediato": "Roberto Carlos",
-    "anios_experiencia": null
-  },
-  {
-    "tipo": "Trabajador",
     "nombre": "Juan Pérez",
-    "puesto": "Asistente de Marketing",
+    "puesto": "AST MK",
+    "puesto_completo": "Asistente de Marketing",
     "estado": "A",
-    "jefe_inmediato": "Lucía Méndez",
-    "anios_experiencia": null
+    "jefe_inmediato": "Lucía Méndez"
   },
   {
-    "tipo": "Trabajador",
-    "nombre": "Ada Lovelace",
-    "puesto": "Asistente de Sistemas",
-    "estado": "A",
-    "jefe_inmediato": "Alan Turing",
-    "anios_experiencia": null
-  },
-  {
-    "tipo": "Trabajador",
     "nombre": "Carlos Slim",
-    "puesto": "Asistente de Producción",
+    "puesto": "AST SIS",
+    "puesto_completo": "Asistente de Sistemas",
     "estado": "D",
-    "jefe_inmediato": "Henry Ford",
-    "anios_experiencia": null
+    "jefe_inmediato": "Alan Turing"
   },
   {
-    "tipo": "Trabajador",
     "nombre": "Marie Curie",
-    "puesto": "Asistente de Logística",
-    "estado": "A",
-    "jefe_inmediato": "Jeff Bezos",
-    "anios_experiencia": null
-  },
-  {
-    "tipo": "Trabajador",
-    "nombre": "Nikola Tesla",
-    "puesto": "Asistente de Finanzas",
-    "estado": "A",
-    "jefe_inmediato": "Warren Buffett",
-    "anios_experiencia": null
-  },
-  {
-    "tipo": "Tecnico",
-    "nombre": "Elon Musk",
-    "puesto": "Técnico de Marketing",
-    "estado": "A",
-    "jefe_inmediato": "Lucía Méndez",
-    "anios_experiencia": 5
-  },
-  {
-    "tipo": "Tecnico",
-    "nombre": "Grace Hopper",
-    "puesto": "Técnico de Marketing",
-    "estado": "A",
-    "jefe_inmediato": "Lucía Méndez",
-    "anios_experiencia": 9
-  },
-  {
-    "tipo": "Tecnico",
-    "nombre": "Margaret Hamilton",
-    "puesto": "Técnico de Marketing",
-    "estado": "A",
-    "jefe_inmediato": "Lucía Méndez",
-    "anios_experiencia": 11
-  },
-  {
-    "tipo": "Tecnico",
-    "nombre": "Linus Torvalds",
-    "puesto": "Técnico de Sistemas",
-    "estado": "A",
-    "jefe_inmediato": "Alan Turing",
-    "anios_experiencia": 10
-  },
-  {
-    "tipo": "Tecnico",
-    "nombre": "Steve Wozniak",
-    "puesto": "Técnico de Sistemas",
-    "estado": "A",
-    "jefe_inmediato": "Alan Turing",
-    "anios_experiencia": 15
-  },
-  {
-    "tipo": "Tecnico",
-    "nombre": "Bill Gates",
-    "puesto": "Técnico de Sistemas",
-    "estado": "TC",
-    "jefe_inmediato": "Alan Turing",
-    "anios_experiencia": 8
-  },
-  {
-    "tipo": "Tecnico",
-    "nombre": "Tim Berners-Lee",
-    "puesto": "Técnico de Producción",
-    "estado": "A",
-    "jefe_inmediato": "Henry Ford",
-    "anios_experiencia": 12
-  },
-  {
-    "tipo": "Tecnico",
-    "nombre": "Vint Cerf",
-    "puesto": "Técnico de Producción",
-    "estado": "A",
-    "jefe_inmediato": "Henry Ford",
-    "anios_experiencia": 7
-  },
-  {
-    "tipo": "Tecnico",
-    "nombre": "Ken Thompson",
-    "puesto": "Técnico de Producción",
-    "estado": "A",
-    "jefe_inmediato": "Henry Ford",
-    "anios_experiencia": 14
-  },
-  {
-    "tipo": "Tecnico",
-    "nombre": "Alan Kay",
-    "puesto": "Técnico de Logística",
-    "estado": "A",
-    "jefe_inmediato": "Jeff Bezos",
-    "anios_experiencia": 6
-  },
-  {
-    "tipo": "Tecnico",
-    "nombre": "Dennis Ritchie",
-    "puesto": "Técnico de Logística",
-    "estado": "A",
-    "jefe_inmediato": "Jeff Bezos",
-    "anios_experiencia": 9
-  },
-  {
-    "tipo": "Tecnico",
-    "nombre": "Bjarne Stroustrup",
-    "puesto": "Técnico de Logística",
+    "puesto": "AST LOG",
+    "puesto_completo": "Asistente de Logística",
     "estado": "R",
-    "jefe_inmediato": "Jeff Bezos",
-    "anios_experiencia": 4
+    "jefe_inmediato": "Lucía Méndez"
   },
   {
-    "tipo": "Tecnico",
+    "nombre": "Linus Torvalds",
+    "puesto": "TEC SIS",
+    "puesto_completo": "Técnico de Sistemas",
+    "estado": "A",
+    "jefe_inmediato": "Alan Turing"
+  },
+  {
+    "nombre": "Tim Berners-Lee",
+    "puesto": "TEC MK",
+    "puesto_completo": "Técnico de Marketing",
+    "estado": "A",
+    "jefe_inmediato": "Lucía Méndez"
+  },
+  {
+    "nombre": "Elon Musk",
+    "puesto": "TEC LOG",
+    "puesto_completo": "Técnico de Logística",
+    "estado": "TC",
+    "jefe_inmediato": "Lucía Méndez"
+  },
+  {
     "nombre": "Larry Page",
-    "puesto": "Técnico de Finanzas",
+    "puesto": "TEC FIN",
+    "puesto_completo": "Técnico de Finanzas",
     "estado": "A",
-    "jefe_inmediato": "Warren Buffett",
-    "anios_experiencia": 8
-  },
-  {
-    "tipo": "Tecnico",
-    "nombre": "Sergey Brin",
-    "puesto": "Técnico de Finanzas",
-    "estado": "A",
-    "jefe_inmediato": "Warren Buffett",
-    "anios_experiencia": 6
-  },
-  {
-    "tipo": "Tecnico",
-    "nombre": "Larry Ellison",
-    "puesto": "Técnico de Finanzas",
-    "estado": "A",
-    "jefe_inmediato": "Warren Buffett",
-    "anios_experiencia": 10
+    "jefe_inmediato": "Roberto Carlos"
   }
 ]
