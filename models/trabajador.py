@@ -1,18 +1,17 @@
 # ================================================================
-# CLASE TRABAJADOR - SISTEMA RRHH SIMPLIFICADO
+# CLASE TRABAJADOR - SISTEMA RRHH
 # ================================================================
 #
-# PROPÓSITO: Representar a cualquier trabajador de la empresa.
+# PROPÓSITO: Representar a un trabajador de la empresa.
 # 
-# CONCEPTOS POO APLICADOS:
+# CONCEPTOS POO:
 #   - ENCAPSULAMIENTO: Atributos privados con "_"
 #   - GETTERS: Métodos para LEER datos
 #   - SETTERS: Métodos para MODIFICAR datos
 #
 # ATRIBUTOS:
 #   - _nombre: Nombre completo del trabajador
-#   - _puesto: Puesto abreviado (ej: "JEF MK")
-#   - _puesto_completo: Nombre completo del puesto
+#   - _puesto: Puesto completo (ej: "Gerente General")
 #   - _estado: Estado laboral (A, TC, D, R)
 #   - _jefe_inmediato: Referencia al objeto de su jefe
 #
@@ -21,50 +20,37 @@
 class Trabajador:
     """
     Clase que representa a un trabajador de la empresa.
-    
-    Args:
-        nombre (str): Nombre completo del trabajador
-        puesto (str): Puesto abreviado (ej: "JEF MK", "AST SIS")
-        puesto_completo (str): Nombre completo del puesto
-        estado (str): Estado laboral (A, TC, D, R)
-        jefe_inmediato (Trabajador, optional): Referencia al jefe
-    
-    Ejemplo:
-        gerente = Trabajador("Roberto Carlos", "GER", "Gerente General", "A", None)
-        jefe = Trabajador("Lucía", "JEF MK", "Jefe de Marketing", "A", gerente)
     """
     
-    # ================================================================
-    # CONSTRUCTOR
-    # ================================================================
-    def __init__(self, nombre, puesto, puesto_completo, estado, jefe_inmediato=None):
+    def __init__(self, nombre, puesto, estado, jefe_inmediato=None):
         """
         Inicializa los datos del trabajador.
+        
+        Args:
+            nombre: Nombre completo
+            puesto: Puesto completo en la empresa
+            estado: Estado laboral (A, TC, D, R)
+            jefe_inmediato: Objeto del jefe (None si es Gerente)
         """
         self._nombre = nombre
-        self._puesto = puesto              # Abreviado (ej: "JEF MK")
-        self._puesto_completo = puesto_completo  # Completo (ej: "Jefe de Marketing")
-        self._estado = estado              # A, TC, D, R
-        self._jefe_inmediato = jefe_inmediato  # Referencia al objeto jefe
+        self._puesto = puesto
+        self._estado = estado
+        self._jefe_inmediato = jefe_inmediato
     
     # ================================================================
-    # GETTERS - Leer datos
+    # GETTERS
     # ================================================================
     
     def get_nombre(self):
-        """Retorna el nombre completo del trabajador."""
+        """Retorna el nombre completo."""
         return self._nombre
     
     def get_puesto(self):
-        """Retorna el puesto abreviado."""
+        """Retorna el puesto completo."""
         return self._puesto
     
-    def get_puesto_completo(self):
-        """Retorna el nombre completo del puesto."""
-        return self._puesto_completo
-    
     def get_resumen(self):
-        """Retorna el puesto abreviado para la tabla."""
+        """Retorna el puesto para la tabla."""
         return self._puesto
     
     def get_estado(self):
@@ -92,30 +78,26 @@ class Trabajador:
     def get_jefe_inmediato(self):
         """
         Retorna el nombre del jefe inmediato.
-        Si no tiene jefe (es Gerente), retorna mensaje especial.
+        Si no tiene jefe (Gerente), retorna mensaje especial.
         """
         if self._jefe_inmediato:
             return self._jefe_inmediato.get_nombre()
         return "Sin jefe (Alta Dirección)"
     
     # ================================================================
-    # SETTERS - Modificar datos
+    # SETTERS
     # ================================================================
     
     def set_nombre(self, nuevo_nombre):
-        """Modifica el nombre del trabajador."""
+        """Modifica el nombre."""
         self._nombre = nuevo_nombre
     
     def set_puesto(self, nuevo_puesto):
-        """Modifica el puesto abreviado."""
+        """Modifica el puesto."""
         self._puesto = nuevo_puesto
     
-    def set_puesto_completo(self, nuevo_completo):
-        """Modifica el nombre completo del puesto."""
-        self._puesto_completo = nuevo_completo
-    
     def set_estado(self, nuevo_estado):
-        """Modifica el estado laboral."""
+        """Modifica el estado."""
         self._estado = nuevo_estado
     
     def set_jefe_inmediato(self, nuevo_jefe):

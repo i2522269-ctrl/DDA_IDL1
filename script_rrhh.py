@@ -1,14 +1,5 @@
 # ================================================================
-# SCRIPT RRHH - SISTEMA SIMPLIFICADO
-# ================================================================
-#
-# PROPÓSITO: Aprender POO con ejemplo simple
-#
-# CONCEPTOS:
-#   - Una sola clase: Trabajador
-#   - Puestos abreviados (GER, JEF MK, AST, TEC)
-#   - Colores por estado en HTML
-#
+# SCRIPT RRHH - SISTEMA RRHH BUSINESS CORPORATION
 # ================================================================
 
 from models.trabajador import Trabajador
@@ -22,26 +13,25 @@ from services.reporte_service import generar_reporte_html, mostrar_resumen_lista
 # Nivel 1: Gerente
 gerente = Trabajador(
     nombre="Roberto Carlos",
-    puesto="GER",
-    puesto_completo="Gerente General",
+    puesto="Gerente General",
     estado="A",
     jefe_inmediato=None
 )
 
 # Nivel 2: Jefes
-jefe_mkt = Trabajador("Lucía Méndez", "JEF MK", "Jefe de Marketing", "A", gerente)
-jefe_sis = Trabajador("Alan Turing", "JEF SIS", "Jefe de Sistemas", "A", gerente)
+jefe_mkt = Trabajador("Lucía Méndez", "Jefe de Marketing", "A", gerente)
+jefe_sis = Trabajador("Alan Turing", "Jefe de Sistemas", "A", gerente)
 
 # Nivel 3: Asistentes
-asistente_mkt = Trabajador("Juan Pérez", "AST MK", "Asistente de Marketing", "A", jefe_mkt)
-asistente_sis = Trabajador("Carlos Slim", "AST SIS", "Asistente de Sistemas", "D", jefe_sis)
-asistente_log = Trabajador("Marie Curie", "AST LOG", "Asistente de Logística", "R", jefe_mkt)
+asistente_mkt = Trabajador("Juan Pérez", "Asistente de Marketing", "A", jefe_mkt)
+asistente_sis = Trabajador("Carlos Slim", "Asistente de Sistemas", "D", jefe_sis)
+asistente_log = Trabajador("Marie Curie", "Asistente de Logística", "R", jefe_mkt)
 
 # Nivel 4: Técnicos
-tecnico_sis = Trabajador("Linus Torvalds", "TEC SIS", "Técnico de Sistemas", "A", jefe_sis)
-tecnico_mkt = Trabajador("Tim Berners-Lee", "TEC MK", "Técnico de Marketing", "A", jefe_mkt)
-tecnico_log = Trabajador("Elon Musk", "TEC LOG", "Técnico de Logística", "TC", jefe_mkt)
-tecnico_fin = Trabajador("Larry Page", "TEC FIN", "Técnico de Finanzas", "A", gerente)
+tecnico_sis = Trabajador("Linus Torvalds", "Técnico de Sistemas", "A", jefe_sis)
+tecnico_mkt = Trabajador("Tim Berners-Lee", "Técnico de Marketing", "A", jefe_mkt)
+tecnico_log = Trabajador("Elon Musk", "Técnico de Logística", "TC", jefe_mkt)
+tecnico_fin = Trabajador("Larry Page", "Técnico de Finanzas", "A", gerente)
 
 
 # ================================================================

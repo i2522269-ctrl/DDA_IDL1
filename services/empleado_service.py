@@ -1,11 +1,5 @@
 # ================================================================
-# SERVICIO DE EMPLEADOS - CREACIÓN Y PERSISTENCIA SIMPLIFICADO
-# ================================================================
-#
-# PROPÓSITO: Manejar la creación de empleados y guardar en JSON
-#
-# SIN TECNICO: Ahora todos son Trabajadores con puesto abreviado
-#
+# SERVICIO DE EMPLEADOS - CREACIÓN Y PERSISTENCIA
 # ================================================================
 
 import json
@@ -20,38 +14,13 @@ from models.trabajador import Trabajador
 
 RUTA_JSON = "data/empleados.json"
 
-# ================================================================
-# OPCIONES DE PUESTOS (Dropdown)
-# ================================================================
-
-PUESTOS_DISPONIBLES = {
-    "GER": "Gerente General",
-    "JEF MK": "Jefe de Marketing",
-    "JEF SIS": "Jefe de Sistemas",
-    "JEF PRO": "Jefe de Producción",
-    "JEF LOG": "Jefe de Logística",
-    "JEF FIN": "Jefe de Finanzas",
-    "AST MK": "Asistente de Marketing",
-    "AST SIS": "Asistente de Sistemas",
-    "AST PRO": "Asistente de Producción",
-    "AST LOG": "Asistente de Logística",
-    "AST FIN": "Asistente de Finanzas",
-    "TEC MK": "Técnico de Marketing",
-    "TEC SIS": "Técnico de Sistemas",
-    "TEC PRO": "Técnico de Producción",
-    "TEC LOG": "Técnico de Logística",
-    "TEC FIN": "Técnico de Finanzas",
-}
-
 
 # ================================================================
 # FUNCIONES DE CONVERSIÓN
 # ================================================================
 
 def empleado_a_diccionario(emp):
-    """
-    Convierte un objeto Trabajador a un diccionario.
-    """
+    """Convierte objeto a diccionario para guardar en JSON."""
     if emp._jefe_inmediato is not None:
         nombre_jefe = emp._jefe_inmediato.get_nombre()
     else:
@@ -60,16 +29,13 @@ def empleado_a_diccionario(emp):
     return {
         "nombre": emp._nombre,
         "puesto": emp._puesto,
-        "puesto_completo": emp._puesto_completo,
         "estado": emp._estado,
         "jefe_inmediato": nombre_jefe
     }
 
 
 def diccionario_a_empleado(dicc, lista_obj):
-    """
-    Convierte un diccionario a un objeto Trabajador.
-    """
+    """Convierte diccionario a objeto."""
     # Buscar el jefe por nombre
     jefe = None
     if dicc["jefe_inmediato"] is not None:
@@ -81,7 +47,6 @@ def diccionario_a_empleado(dicc, lista_obj):
     return Trabajador(
         nombre=dicc["nombre"],
         puesto=dicc["puesto"],
-        puesto_completo=dicc["puesto_completo"],
         estado=dicc["estado"],
         jefe_inmediato=jefe
     )
@@ -92,9 +57,7 @@ def diccionario_a_empleado(dicc, lista_obj):
 # ================================================================
 
 def guardar_empleados(lista_empleados):
-    """
-    Guarda la lista de empleados en un archivo JSON.
-    """
+    """Guarda la lista de empleados en JSON."""
     try:
         os.makedirs("data", exist_ok=True)
         
@@ -112,11 +75,9 @@ def guardar_empleados(lista_empleados):
 
 
 def cargar_empleados():
-    """
-    Carga los empleados desde el archivo JSON.
-    """
+    """Carga los empleados desde el archivo JSON."""
     if not os.path.exists(RUTA_JSON):
-        print("No existe archivo JSON. Se creará al guardar.")
+        print("No existe archivo JSON.")
         return []
     
     try:
@@ -129,7 +90,6 @@ def cargar_empleados():
             emp = Trabajador(
                 nombre=dicc["nombre"],
                 puesto=dicc["puesto"],
-                puesto_completo=dicc["puesto_completo"],
                 estado=dicc["estado"],
                 jefe_inmediato=None
             )
@@ -157,38 +117,22 @@ def cargar_empleados():
 def crear_empleado(nombre, puesto, estado, jefe=None):
     """
     Crea un nuevo empleado.
-    
-    Args:
-        nombre (str): Nombre completo
-        puesto (str): Código abreviado del puesto (ej: "JEF MK")
-        estado (str): Estado laboral (A, TC, D, R)
-        jefe (Trabajador, optional): Objeto del jefe
-    
-    Returns:
-        Trabajador: Nuevo empleado
-    
-    Raises:
-        ValueError: Si algún dato no es válido
     """
     # Validaciones
     if not nombre or nombre.strip() == "":
         raise ValueError("El nombre es obligatorio")
     
-    if puesto not in PUESTOS_DISPONIBLES:
-        raise ValueError(f"Puesto inválido. Use: {list(PUESTOS_DISPONIBLES.keys())}")
+    if not puesto or puesto.strip() == "":
+        raise ValueError("El puesto es obligatorio")
     
     estados_validos = ["A", "TC", "D", "R"]
     if estado not in estados_validos:
-        raise ValueError(f"Estado inválido. Use: {estados_validos}")
-    
-    # Obtener nombre completo del puesto
-    puesto_completo = PUESTOS_DISPONIBLES[puesto]
+        raise ValueError(f"Estado inválido")
     
     # Crear objeto
     nuevo_empleado = Trabajador(
         nombre=nombre.strip(),
-        puesto=puesto,
-        puesto_completo=puesto_completo,
+        puesto=puesto.strip(),
         estado=estado,
         jefe_inmediato=jefe
     )
@@ -197,9 +141,7 @@ def crear_empleado(nombre, puesto, estado, jefe=None):
 
 
 def eliminar_empleado(lista_empleados, nombre):
-    """
-    Elimina un empleado de la lista por nombre.
-    """
+    """Elimina un empleado de la lista."""
     lista_nueva = [emp for emp in lista_empleados if emp.get_nombre() != nombre]
     eliminado = len(lista_nueva) < len(lista_empleados)
     return lista_nueva, eliminado

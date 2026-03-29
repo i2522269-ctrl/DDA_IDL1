@@ -1,71 +1,61 @@
 [
   {
     "nombre": "Roberto Carlos",
-    "puesto": "GER",
-    "puesto_completo": "Gerente General",
+    "puesto": "Gerente General",
     "estado": "A",
     "jefe_inmediato": null
   },
   {
     "nombre": "Lucía Méndez",
-    "puesto": "JEF MK",
-    "puesto_completo": "Jefe de Marketing",
+    "puesto": "Jefe de Marketing",
     "estado": "A",
     "jefe_inmediato": "Roberto Carlos"
   },
   {
     "nombre": "Alan Turing",
-    "puesto": "JEF SIS",
-    "puesto_completo": "Jefe de Sistemas",
+    "puesto": "Jefe de Sistemas",
     "estado": "A",
     "jefe_inmediato": "Roberto Carlos"
   },
   {
     "nombre": "Juan Pérez",
-    "puesto": "AST MK",
-    "puesto_completo": "Asistente de Marketing",
+    "puesto": "Asistente de Marketing",
     "estado": "A",
     "jefe_inmediato": "Lucía Méndez"
   },
   {
     "nombre": "Carlos Slim",
-    "puesto": "AST SIS",
-    "puesto_completo": "Asistente de Sistemas",
+    "puesto": "Asistente de Sistemas",
     "estado": "D",
     "jefe_inmediato": "Alan Turing"
   },
   {
     "nombre": "Marie Curie",
-    "puesto": "AST LOG",
-    "puesto_completo": "Asistente de Logística",
+    "puesto": "Asistente de Logística",
     "estado": "R",
     "jefe_inmediato": "Lucía Méndez"
   },
   {
     "nombre": "Linus Torvalds",
-    "puesto": "TEC SIS",
-    "puesto_completo": "Técnico de Sistemas",
+    "puesto": "Técnico de Sistemas",
     "estado": "A",
     "jefe_inmediato": "Alan Turing"
   },
   {
     "nombre": "Tim Berners-Lee",
-    "puesto": "TEC MK",
-    "puesto_completo": "Técnico de Marketing",
+    "puesto": "Técnico de Marketing",
     "estado": "A",
     "jefe_inmediato": "Lucía Méndez"
   },
   {
     "nombre": "Elon Musk",
-    "puesto": "TEC LOG",
-    "puesto_completo": "Técnico de Logística",
+    "puesto": "Técnico de Logística",
     "estado": "TC",
     "jefe_inmediato": "Lucía Méndez"
   },
   {
     "nombre": "Larry Page",
-    "puesto": "TEC FIN",
-    "puesto_completo": "Técnico de Finanzas",
+    "puesto": "Técnico de Finanzas",
     "estado": "A",
     "jefe_inmediato": "Roberto Carlos"
   }

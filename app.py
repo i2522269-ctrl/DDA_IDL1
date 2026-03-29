@@ -1,24 +1,7 @@
 # ================================================================
 # APP STREAMLIT - SISTEMA RRHH BUSINESS CORPORATION
 # ================================================================
-#
-# FUNCIONALIDADES:
-#   - Ver lista de empleados en tabla
-#   - Registrar nuevos empleados (con puestos predefinidos)
-#   - Generar reporte HTML con colores por estado
-#
-# COLORES POR ESTADO:
-#   🟢 Activo        → Verde (#4CAF50)
-#   🔴 Término contrato → Rojo (#f44336)
-#   ⚫ Despido       → Negro (#333333)
-#   🟠 Renuncia      → Naranja (#FF9800)
-#
-# ================================================================
 
-
-# ================================================================
-# IMPORTACIONES
-# ================================================================
 import streamlit as st
 import pandas as pd
 
@@ -27,8 +10,7 @@ from services.reporte_service import generar_reporte_html, get_colores_estado
 from services.empleado_service import (
     crear_empleado,
     cargar_empleados,
-    guardar_empleados,
-    PUESTOS_DISPONIBLES
+    guardar_empleados
 )
 
 
@@ -54,7 +36,7 @@ if "empleados" not in st.session_state:
 # ================================================================
 
 def convertir_a_dataframe(lista):
-    """Convierte la lista a DataFrame con colores."""
+    """Convierte la lista a DataFrame."""
     datos = []
     for emp in lista:
         estado_codigo = emp.get_estado_codigo()
@@ -68,12 +50,6 @@ def convertir_a_dataframe(lista):
             "_color": color_fondo
         })
     return pd.DataFrame(datos)
-
-
-def recargar_datos():
-    """Recarga los datos desde JSON."""
-    guardar_empleados(st.session_state.empleados)
-    st.session_state.empleados = cargar_empleados()
 
 
 # ================================================================
@@ -119,12 +95,9 @@ with tab1:
     
     st.markdown("---")
     
-    # Tabla con colores
+    # Tabla
     st.subheader("👥 Lista de Empleados")
-    
     df = convertir_a_dataframe(st.session_state.empleados)
-    
-    # Mostrar tabla con estilo
     st.dataframe(
         df[["Nombre", "Puesto", "Jefe Inmediato", "Estado"]],
         use_container_width=True,
@@ -142,16 +115,14 @@ with tab2:
         col1, col2 = st.columns(2)
         
         with col1:
-            # Selector de puesto (dropdown)
-            puesto_opciones = list(PUESTOS_DISPONIBLES.keys())
-            puesto = st.selectbox(
+            # Campo para puesto (texto libre)
+            puesto = st.text_input(
                 "Puesto *",
-                options=puesto_opciones,
-                format_func=lambda x: f"{x} - {PUESTOS_DISPONIBLES[x]}"
+                placeholder="Ej: Gerente General"
             )
         
         with col2:
-            # Selector de estado con colores
+            # Selector de estado
             estado = st.selectbox(
                 "Estado *",
                 options=["A", "TC", "D", "R"],
@@ -183,6 +154,9 @@ with tab2:
             if not nombre.strip():
                 errores.append("El nombre es obligatorio")
             
+            if not puesto.strip():
+                errores.append("El puesto es obligatorio")
+            
             if errores:
                 for error in errores:
                     st.error(f"❌ {error}")
@@ -211,11 +185,6 @@ with tab2:
                     
                 except ValueError as e:
                     st.error(f"❌ {e}")
-    
-    # Info de puestos
-    with st.expander("ℹ️ Lista de puestos"):
-        for codigo, nombre_completo in PUESTOS_DISPONIBLES.items():
-            st.write(f"**{codigo}** → {nombre_completo}")
 
 
 # ================================================================
