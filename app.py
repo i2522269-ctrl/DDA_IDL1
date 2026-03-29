@@ -174,7 +174,7 @@ with tab1:
     df = convertir_a_dataframe(st.session_state.empleados)
     st.dataframe(
         df[["Nombre", "Puesto", "Jefe Inmediato", "Estado"]],
-        use_container_width=True,
+        width='stretch',
         hide_index=True
     )
 
@@ -308,12 +308,12 @@ with tab2:
         registrar = st.button(
             "➕ Registrar",
             type="primary",
-            use_container_width=True,
+            width='stretch',
             disabled=(puesto_confirmado is None or not nombre.strip())
         )
     
     with col_btn2:
-        if st.button("🔄 Limpiar", use_container_width=True):
+        if st.button("🔄 Limpiar", width='stretch'):
             st.session_state.puesto_idx = 0
             st.session_state.jefe_idx = 0
             st.rerun()
@@ -377,7 +377,7 @@ with tab3:
     
     st.markdown("---")
     
-    if st.button("🔵 Generar Reporte", type="primary", use_container_width=True):
+    if st.button("🔵 Generar Reporte", type="primary", width='stretch'):
         with st.spinner("Generando..."):
             archivo = generar_reporte_html(st.session_state.empleados)
         
