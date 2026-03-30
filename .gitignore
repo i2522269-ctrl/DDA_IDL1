@@ -1,1 +1,7 @@
+# Caché de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Carpeta del proyecto (eliminar si no es necesaria)
 DDA_IDL1/

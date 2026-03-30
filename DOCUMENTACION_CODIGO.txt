@@ -1,0 +1,538 @@
+================================================================================
+              SISTEMA DE RECURSOS HUMANOS - BUSINESS CORPORATION
+                    DOCUMENTACIÓN TÉCNICA DEL CÓDIGO
+================================================================================
+
+Materia: IDL1 - Desarrollo de Aplicaciones
+Profesor: [Nombre del Profesor]
+Estudiante: Joan Fernando Quispe Estrella
+Fecha: 29 de marzo de 2026
+
+================================================================================
+                              ÍNDICE
+================================================================================
+
+1. Estructura del Proyecto
+2. Diagrama de Clases (POO)
+3. Descripción de Archivos
+4. Conceptos de Programación Orientada a Objetos (POO)
+5. Flujo del Sistema
+6. Pantallas/Funcionalidades
+
+================================================================================
+                        1. ESTRUCTURA DEL PROYECTO
+================================================================================
+
+DDA_IDL1/
+├── app.py                  ← Aplicación principal con Streamlit
+├── script_rrhh.py          ← Script educativo standalone
+├── requirements.txt        ← Dependencias del proyecto
+├── models/
+│   └── trabajador.py        ← Clase Trabajador (POO)
+├── services/
+│   ├── empleado_service.py ← CRUD y persistencia JSON
+│   └── reporte_service.py   ← Generación de reportes HTML
+└── data/
+    └── empleados.json       ← Base de datos de empleados
+
+================================================================================
+                      2. DIAGRAMA DE CLASES (POO)
+================================================================================
+
+    ┌─────────────────────────────────────┐
+    │           TRABAJADOR                │
+    ├─────────────────────────────────────┤
+    │ ATRIBUTOS PRIVADOS (Encapsulamiento)│
+    │ - __nombre: str                     │
+    │ - __puesto: str                    │
+    │ - __estado: str                     │
+    │ - __jefe_inmediato: str             │
+    ├─────────────────────────────────────┤
+    │ MÉTODOS GETTER (Acceso controlado)  │
+    │ + get_nombre() -> str               │
+    │ + get_puesto() -> str               │
+    │ + get_estado() -> str               │
+    │ + get_estado_codigo() -> str        │
+    │ + get_jefe_inmediato() -> str       │
+    ├─────────────────────────────────────┤
+    │ MÉTODOS SETTER (Modificación)       │
+    │ + set_nombre(nombre)                │
+    │ + set_puesto(puesto)                │
+    │ + set_estado(estado)                │
+    │ + set_jefe_inmediato(jefe)          │
+    └─────────────────────────────────────┘
+
+================================================================================
+                      3. DESCRIPCIÓN DE ARCHIVOS
+================================================================================
+
+------------------------------------------------------------------------------
+MODELOS / trabajador.py
+------------------------------------------------------------------------------
+
+FUNCIÓN: Define la clase Trabajador que representa a cada empleado.
+
+CÓDIGO EXPLICADO:
+
+    class Trabajador:
+        """Clase que representa a un trabajador en la empresa."""
+        
+        #--------------------------------------------------------------------------
+        # CONSTRUCTOR (__init__)
+        #--------------------------------------------------------------------------
+        def __init__(self, nombre, puesto, estado, jefe=None):
+            self.__nombre = nombre          # Nombre completo del empleado
+            self.__puesto = puesto          # Cargo que ocupa
+            self.__estado = estado          # Estado laboral (A, TC, D, R)
+            self.__jefe_inmediato = jefe.get_nombre() if jefe else None
+            # Si existe jefe, guarda su nombre; si no, guarda None
+        
+        #--------------------------------------------------------------------------
+        # GETTERS (Métodos para obtener valores - Encapsulamiento)
+        #--------------------------------------------------------------------------
+        def get_nombre(self):
+            """Retorna el nombre del trabajador."""
+            return self.__nombre
+        
+        def get_puesto(self):
+            """Retorna el puesto del trabajador."""
+            return self.__puesto
+        
+        def get_estado(self):
+            """Retorna el estado con formato legible."""
+            estados = {
+                "A": "Activo", "TC": "Término de contrato",
+                "D": "Despido", "R": "Renuncia"
+            }
+            return estados.get(self.__estado, "Desconocido")
+        
+        def get_estado_codigo(self):
+            """Retorna el código del estado (A, TC, D, R)."""
+            return self.__estado
+        
+        def get_jefe_inmediato(self):
+            """Retorna el nombre del jefe inmediato."""
+            return self.__jefe_inmediato or "Sin jefe"
+        
+        #--------------------------------------------------------------------------
+        # SETTERS (Métodos para modificar valores - Encapsulamiento)
+        #--------------------------------------------------------------------------
+        def set_nombre(self, nombre):
+            """Modifica el nombre del trabajador."""
+            self.__nombre = nombre
+        
+        def set_puesto(self, puesto):
+            """Modifica el puesto del trabajador."""
+            self.__puesto = puesto
+        
+        def set_estado(self, estado):
+            """Modifica el estado del trabajador."""
+            self.__estado = estado
+        
+        def set_jefe_inmediato(self, jefe):
+            """Modifica el jefe inmediato del trabajador."""
+            self.__jefe_inmediato = jefe.get_nombre() if jefe else None
+
+CONCEPTO POO APLICADO: ENCAPSULAMIENTO
+- Los atributos usan "__" (doble guión bajo) para ser privados
+- No se puede acceder directamente:trabajador.__nombre
+- Solo se accede mediante métodos getter/setter
+- Protege los datos de modificaciones accidentales
+
+------------------------------------------------------------------------------
+SERVICES / empleado_service.py
+------------------------------------------------------------------------------
+
+FUNCIÓN: Gestiona las operaciones CRUD y la persistencia en JSON.
+
+CÓDIGO EXPLICADO:
+
+    #----------------------------------------------------------------------
+    # CARGAR EMPLEADOS DESDE JSON (LECTURA)
+    #----------------------------------------------------------------------
+    def cargar_empleados():
+        """Carga los empleados desde el archivo JSON."""
+        try:
+            with open("data/empleados.json", "r", encoding="utf-8") as archivo:
+                datos = json.load(archivo)  # Convierte JSON a lista de diccionarios
+                return [Trabajador(**d) for d in datos]  # Crea objetos Trabajador
+        except FileNotFoundError:
+            return []  # Si no existe el archivo, retorna lista vacía
+        except json.JSONDecodeError:
+            return []  # Si el JSON está corrupto, retorna lista vacía
+
+    #----------------------------------------------------------------------
+    # GUARDAR EMPLEADOS EN JSON (ESCRITURA)
+    #----------------------------------------------------------------------
+    def guardar_empleados(empleados):
+        """Guarda la lista de empleados en el archivo JSON."""
+        datos = []
+        for emp in empleados:
+            # Convierte cada objeto Trabajador a diccionario
+            datos.append({
+                "nombre": emp.get_nombre(),
+                "puesto": emp.get_puesto(),
+                "estado": emp.get_estado_codigo(),
+                "jefe_inmediato": emp.get_jefe_inmediato() 
+            })
+        
+        with open("data/empleados.json", "w", encoding="utf-8") as archivo:
+            json.dump(datos, archivo, indent=4, ensure_ascii=False)
+            # ensure_ascii=False permite acentos y caracteres especiales
+
+    #----------------------------------------------------------------------
+    # CREAR NUEVO EMPLEADO (CREATE)
+    #----------------------------------------------------------------------
+    def crear_empleado(nombre, puesto, estado, jefe=None):
+        """Crea un nuevo empleado con validación."""
+        if estado not in ["A", "TC", "D", "R"]:
+            raise ValueError("Estado inválido")
+        return Trabajador(nombre, puesto, estado, jefe)
+
+PERSISTENCIA DE DATOS:
+- Se usa formato JSON para almacenar datos
+- Ventaja: legible por humanos y compatible con múltiples lenguajes
+- encoding="utf-8" permite caracteres especiales (ñ, acentos)
+
+------------------------------------------------------------------------------
+SERVICES / reporte_service.py
+------------------------------------------------------------------------------
+
+FUNCIÓN: Genera reportes HTML con tablas y colores según estado.
+
+CÓDIGO EXPLICADO:
+
+    #----------------------------------------------------------------------
+    # DEFINICIÓN DE COLORES POR ESTADO
+    #----------------------------------------------------------------------
+    def get_colores_estado(estado):
+        """
+        Retorna el color de fondo y texto según el estado del empleado.
+        Aplica el concepto de POLIMORFISMO: misma función, diferente comportamiento.
+        """
+        colores = {
+            "A":  ("#d4edda", "#155724"),  # Verde: Activo
+            "TC": ("#f8d7da", "#721c24"),  # Rojo: Término de contrato
+            "D":  ("#ffffff", "#000000"),  # Blanco/Negro: Despido
+            "R":  ("#fff3cd", "#856404"),  # Naranja: Renuncia
+        }
+        return colores.get(estado, ("#ffffff", "#000000"))
+
+    #----------------------------------------------------------------------
+    # GENERACIÓN DE TABLA HTML
+    #----------------------------------------------------------------------
+    def generar_reporte_html(empleados):
+        """Genera un archivo HTML con la tabla de empleados."""
+        
+        # INICIO DEL DOCUMENTO HTML
+        html = """<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Reporte RRHH</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 20px; }
+                table { width: 100%; border-collapse: collapse; }
+                th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+                th { background-color: #2c3e50; color: white; }
+            </style>
+        </head>
+        <body>
+            <h1>Reporte de Recursos Humanos</h1>
+            <p><strong>Empresa:</strong> Business Corporation</p>
+            <p><strong>Fecha:</strong> """ + datetime.now().strftime("%d/%m/%Y %H:%M") + """</p>
+            <table>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Puesto</th>
+                    <th>Jefe Inmediato</th>
+                    <th>Estado</th>
+                </tr>
+        """
+        
+        # FILAS DE LA TABLA (con colores según estado)
+        for emp in empleados:
+            color_fondo, color_texto = get_colores_estado(emp.get_estado_codigo())
+            
+            html += f"""
+                <tr style="background-color: {color_fondo}; color: {color_texto};">
+                    <td>{emp.get_nombre()}</td>
+                    <td>{emp.get_puesto()}</td>
+                    <td>{emp.get_jefe_inmediato()}</td>
+                    <td>{emp.get_estado()}</td>
+                </tr>
+            """
+        
+        # FIN DEL DOCUMENTO HTML
+        html += """
+            </table>
+        </body>
+        </html>
+        """
+        
+        # ESCRITURA DEL ARCHIVO (sin emojis para evitar errores en Windows)
+        with open("reporte_rrhh.html", "w", encoding="utf-8") as archivo:
+            archivo.write(html)
+        
+        return "reporte_rrhh.html"
+
+CONCEPTO POO APLICADO: POLIMORFISMO
+- La función get_colores_estado() tiene comportamiento diferente según el estado
+- A = Verde, TC = Rojo, D = Negro, R = Naranja
+- mismo nombre de función, diferentes resultados
+
+------------------------------------------------------------------------------
+APP.PY - APLICACIÓN PRINCIPAL (Streamlit)
+------------------------------------------------------------------------------
+
+FUNCIÓN: Interfaz gráfica web para gestionar empleados.
+
+SECCIONES DEL CÓDIGO:
+
+    1. IMPORTACIONES
+    ---------------
+    import streamlit as st      # Framework para interfaces web
+    import pandas as pd         # Para manejar tablas/datos
+    import json                  # Para persistencia de datos
+    from models.trabajador import Trabajador
+    from services.empleado_service import crear_empleado, cargar_empleados
+    from services.reporte_service import generar_reporte_html
+
+    2. CONFIGURACIÓN DE LA PÁGINA
+    -----------------------------
+    st.set_page_config(
+        page_title="Sistema RRHH",   # Título en la pestaña del navegador
+        page_icon="🏢",               # Icono emoji
+        layout="wide"                 # Diseño ancho completo
+    )
+
+    3. JERARQUÍA ORGANIZACIONAL (DICCIONARIO)
+    -----------------------------------------
+    JERARQUIA = {
+        "Gerente General": {"nivel": 1, "jefes_validos": [None]},
+        "Jefe de Marketing": {"nivel": 2, "jefes_validos": ["Gerente General"]},
+        "Asistente de Marketing": {"nivel": 3, "jefes_validos": ["Jefe de Marketing"]},
+        # ... más puestos
+    }
+
+    Este diccionario define las reglas de negocio:
+    - Qué puestos existen
+    - Qué nivel tienen en la organización
+    - Quiénes pueden ser sus jefes
+
+    4. FUNCIONES DE SELECCIÓN BIDIRECCIONAL
+    --------------------------------------
+    def obtener_jefes_validos_para_puesto(puesto):
+        """Según el puesto, retorna qué tipos de jefe son válidos."""
+        
+    def obtener_puestos_validos_para_jefe(jefe):
+        """Según el jefe, retorna qué puestos pueden reportarle."""
+
+    Estas funciones implementan la LÓGICA BIDIRECCIONAL:
+    - Si seleccionas PUESTO → se filtran los jefes válidos
+    - Si seleccionas JEFE → se filtran los puestos válidos
+
+    5. PESTAÑAS (TABS)
+    -----------------
+    tab1, tab2, tab3 = st.tabs(["📊 Dashboard", "🆕 Registrar", "📄 Reporte"])
+
+    - TAB 1 (Dashboard): Muestra estadísticas y tabla de empleados
+    - TAB 2 (Registrar): Formulario para agregar nuevos empleados
+    - TAB 3 (Reporte): Genera archivo HTML con colores
+
+================================================================================
+        4. CONCEPTOS DE PROGRAMACIÓN ORIENTADA A OBJETOS (POO)
+================================================================================
+
+------------------------------------------------------------------------------
+ENCAPSULAMIENTO (Encapsulation)
+------------------------------------------------------------------------------
+¿QUÉ ES?: Proteger los datos evitando acceso directo desde fuera de la clase.
+
+CÓDIGO:
+    class Trabajador:
+        def __init__(self, nombre):
+            self.__nombre = nombre  # Atributo PRIVADO (doble __)
+
+USO:
+    emp = Trabajador("Juan")
+    emp.__nombre          # ❌ ERROR: Atributo privado
+    emp.get_nombre()      # ✅ CORRECTO: Usar getter
+
+¿POR QUÉ?: 
+- Evita errores por modificación accidental
+- Permite validar datos antes de guardarlos
+- Mantiene la integridad de los datos
+
+------------------------------------------------------------------------------
+HERENCIA (Inheritance) - Preparado para futura expansión
+------------------------------------------------------------------------------
+¿QUÉ ES?: Crear nuevas clases basadas en clases existentes.
+
+EJEMPLO PREPARADO:
+    class Trabajador:
+        pass
+    
+    class Tecnico(Trabajador):  # Tecnico hereda de Trabajador
+        def __init__(self, nombre, especialidad):
+            super().__init__(nombre)  # Llama al constructor padre
+            self.__especialidad = especialidad
+
+NOTA: El proyecto actual usa una sola clase para simplificar,
+pero está preparado para扩展 (expandir) con herencia si se necesita.
+
+------------------------------------------------------------------------------
+POLIMORFISMO (Polymorphism)
+------------------------------------------------------------------------------
+¿QUÉ ES?: El mismo método con comportamiento diferente según el contexto.
+
+EJEMPLO EN EL CÓDIGO:
+    def get_colores_estado(estado):
+        if estado == "A": return ("verde", "texto verde")
+        if estado == "TC": return ("rojo", "texto rojo")
+        if estado == "D": return ("negro", "texto blanco")
+        if estado == "R": return ("naranja", "texto naranja")
+
+MISMO NOMBRE: get_colores_estado()
+DIFERENTE RESULTADO: según el estado del empleado
+
+================================================================================
+                      5. FLUJO DEL SISTEMA
+================================================================================
+
+DIAGRAMA DE FLUJO:
+
+    ┌─────────────────┐
+    │   INICIO        │
+    └────────┬────────┘
+             │
+             ▼
+    ┌─────────────────┐
+    │ Cargar JSON     │──► Si no existe: crear lista vacía
+    │ empleados.json  │
+    └────────┬────────┘
+             │
+             ▼
+    ┌─────────────────┐
+    │ Mostrar         │
+    │ Dashboard       │
+    │ (Estadísticas)  │
+    └────────┬────────┘
+             │
+    ┌────────┴────────┐
+    │                 │
+    ▼                 ▼
+┌───────────┐  ┌───────────┐  ┌───────────┐
+│ Registrar │  │ Reporte   │  │ Salir     │
+│ Empleado  │  │ HTML      │  │           │
+└─────┬─────┘  └─────┬─────┘  └───────────┘
+      │               │
+      ▼               ▼
+┌───────────┐  ┌───────────┐
+│ Validar   │  │ Generar    │
+│ datos     │  │ archivo    │
+└─────┬─────┘  │ HTML       │
+      │         └─────┬─────┘
+      ▼               │
+┌───────────┐         │
+│ Guardar   │         │
+│ en JSON   │         │
+└─────┬─────┘         │
+      │               │
+      ▼               ▼
+    FIN          Abrir en navegador
+
+================================================================================
+                      6. PANTALLAS/FUNCIONALIDADES
+================================================================================
+
+------------------------------------------------------------------------------
+PANTALLA 1: DASHBOARD
+------------------------------------------------------------------------------
+- Muestra 4 métricas: Total, Activos, TC, D+R
+- Tabla con todos los empleados
+- Actualización en tiempo real
+
+CÓDIGO CLAVE:
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Total", len(st.session_state.empleados))
+    with col2:
+        activos = sum(1 for e in st.session_state.empleados if e.get_estado_codigo() == "A")
+        st.metric("Activos", activos)
+
+------------------------------------------------------------------------------
+PANTALLA 2: REGISTRAR EMPLEADO (Selección Bidireccional)
+------------------------------------------------------------------------------
+Permite registrar empleados de dos formas:
+
+MODO A: Seleccionar por PUESTO
+    1. Usuario selecciona puesto
+    2. Sistema filtra automáticamente los jefes válidos
+    3. Usuario selecciona jefe de la lista filtrada
+    4. Sistema valida y guarda
+
+MODO B: Seleccionar por JEFE
+    1. Usuario selecciona jefe directo
+    2. Sistema filtra automáticamente los puestos válidos
+    3. Usuario selecciona puesto de la lista filtrada
+    4. Sistema valida y guarda
+
+CÓDIGO DE SELECCIÓN BIDIRECCIONAL:
+    # Si selecciona puesto primero
+    puestos_validos_jefe = obtener_jefes_validos_para_puesto(puesto)
+    empleados_filtrados = [e for e in empleados if e.get_puesto() in puestos_validos_jefe]
+    
+    # Si selecciona jefe primero
+    puestos_validos = obtener_puestos_validos_para_jefe(jefe_seleccionado, empleados)
+
+------------------------------------------------------------------------------
+PANTALLA 3: REPORTE HTML
+------------------------------------------------------------------------------
+- Genera archivo reporte_rrhh.html
+- Tabla con colores según estado:
+    * Verde   → Activo
+    * Rojo    → Término de contrato
+    * Negro   → Despido
+    * Naranja → Renuncia
+- Se puede abrir en cualquier navegador
+
+================================================================================
+                      7. DATOS DE PRUEBA (empleados.json)
+================================================================================
+
+Los datos incluyen 10 empleados organizados jerárquicamente:
+
+NIVEL 1 (Sin jefe):
+  - Roberto Carlos → Gerente General
+
+NIVEL 2 (Jefes → reportan a Gerente General):
+  - Lucía Méndez → Jefe de Marketing
+  - Alan Turing → Jefe de Sistemas
+
+NIVEL 3 (Asistentes/Técnicos → reportan a Jefes):
+  - Juan Pérez → Asistente de Marketing (→ Lucía Méndez)
+  - Carlos Slim → Asistente de Sistemas (→ Alan Turing)
+  - Marie Curie → Asistente de Logística (→ Lucía Méndez)
+  - Linus Torvalds → Técnico de Sistemas (→ Alan Turing)
+  - Tim Berners-Lee → Técnico de Marketing (→ Lucía Méndez)
+  - Elon Musk → Técnico de Logística (→ Lucía Méndez)
+  - Larry Page → Técnico de Finanzas (→ Roberto Carlos)
+
+================================================================================
+                      8. COMANDOS PARA EJECUTAR
+================================================================================
+
+LOCAL (en tu computadora):
+    pip install streamlit pandas
+    streamlit run app.py
+
+STREAMLIT CLOUD (deploy en la nube):
+    1. Subir código a GitHub
+    2. Conectar repo en https://streamlit.io/cloud
+    3. Seleccionar app.py como archivo principal
+    4. Desplegar
+
+================================================================================
+                           FIN DEL DOCUMENTO
+================================================================================
